@@ -3,7 +3,7 @@ COPY src /app/src
 COPY pom.xml /app
 RUN mvn -f /app/pom.xml clean package
 
-FROM openjdk:11-jdk-alpine
+FROM openjdk:14-jdk-alpine
 RUN addgroup -S spring && adduser -S spring -G spring
 USER spring:spring
 ARG JAR_FILE=/app/target/*.jar
