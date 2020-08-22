@@ -18,3 +18,14 @@ Start app:
 java -jar target/api-0.0.1-SNAPSHOT.jar 
 ```
 
+Containerizing app:
+
+```bash
+docker build -t sebastian-czech/simple-rest-api-java-spring .
+```
+
+Run app in container:
+
+```bash
+docker run -p 48080:48080 sebastian-czech/simple-rest-api-java-spring
+```
