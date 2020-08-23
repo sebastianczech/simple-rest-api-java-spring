@@ -1,15 +1,35 @@
 pipeline {
-    agent any
+    agent {
+        docker {
+            image 'maven:3-alpine'
+            args '-v /root/.m2:/root/.m2'
+        }
+    }
 
     stages {
+        stage('Info') {
+            steps {
+                echo 'Current working directory: '
+
+                sh 'pwd'
+
+                echo 'List of files: '
+
+                sh 'ls -la'
+            }
+        }
         stage('Build') {
             steps {
                 echo 'Building..'
+
+                sh 'mvn -B -DskipTests clean package'
             }
         }
         stage('Test unit') {
             steps {
                 echo 'Unit testing..'
+
+                sh 'mvn test'
             }
         }
         stage('Test integration') {
