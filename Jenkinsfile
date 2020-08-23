@@ -7,9 +7,19 @@ pipeline {
                 echo 'Building..'
             }
         }
-        stage('Test') {
+        stage('Test unit') {
             steps {
-                echo 'Testing..'
+                echo 'Unit testing..'
+            }
+        }
+        stage('Test integration') {
+            steps {
+                echo 'Integration testing..'
+            }
+        }
+        stage('Test e2e') {
+            steps {
+                echo 'E2E testing..'
             }
         }
         stage('Deploy') {
