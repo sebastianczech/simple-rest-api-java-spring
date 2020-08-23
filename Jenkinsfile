@@ -22,9 +22,19 @@ pipeline {
                 echo 'E2E testing..'
             }
         }
-        stage('Deploy') {
+        stage('Deploy test') {
             steps {
-                echo 'Deploying....'
+                echo 'Deploying to test environment....'
+            }
+        }
+        stage('Deploy stage') {
+            steps {
+                echo 'Deploying to stage environment....'
+            }
+        }
+        stage('Deploy prod') {
+            steps {
+                echo 'Deploying to production environment....'
             }
         }
     }
