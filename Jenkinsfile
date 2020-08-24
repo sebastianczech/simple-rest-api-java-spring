@@ -25,36 +25,11 @@ pipeline {
                 sh 'mvn -B -DskipTests clean package'
             }
         }
-        stage('Test unit') {
+        stage('Test') {
             steps {
                 echo 'Unit testing..'
 
                 sh 'mvn test'
-            }
-        }
-        stage('Test integration') {
-            steps {
-                echo 'Integration testing..'
-            }
-        }
-        stage('Test e2e') {
-            steps {
-                echo 'E2E testing..'
-            }
-        }
-        stage('Deploy test') {
-            steps {
-                echo 'Deploying to test environment....'
-            }
-        }
-        stage('Deploy stage') {
-            steps {
-                echo 'Deploying to stage environment....'
-            }
-        }
-        stage('Deploy prod') {
-            steps {
-                echo 'Deploying to production environment....'
             }
         }
     }
