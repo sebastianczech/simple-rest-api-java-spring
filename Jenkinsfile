@@ -33,7 +33,7 @@ pipeline {
                 sh 'mvn -B -DskipTests clean package'
             }
         }
-        stage('Test') {
+        stage('Test unit') {
             steps {
                 echo 'Unit testing..'
 
@@ -45,9 +45,15 @@ pipeline {
                 }
             }
         }
-        stage("publish to nexus") {
+        stage('Test acceptance') {
+            steps {
+                echo 'Acceptance testing..'
+            }
+        }
+        stage('Publish to Nexus') {
             steps {
                 script {
+                    // required plugins: pipeline-utility-steps, nexus-artifact-uploader
                     pom = readMavenPom file: "pom.xml";
                     filesByGlob = findFiles(glob: "target/*.${pom.packaging}");
                     echo "${filesByGlob[0].name} ${filesByGlob[0].path} ${filesByGlob[0].directory} ${filesByGlob[0].length} ${filesByGlob[0].lastModified}"
