@@ -86,8 +86,9 @@ pipeline {
                 }
             }
         }
-        stage('Publish to artifactory') {
+        stage('Publish to Artifactory') {
             steps {
+                // required plugins: artifactory
                 rtUpload (
                     serverId: 'artifactory_homelab',
                     spec: '''{
@@ -97,14 +98,7 @@ pipeline {
                               "target": "libs-release-local"
                             }
                          ]
-                    }''',
-
-                    // Optional - Associate the uploaded files with the following custom build name and build number,
-                    // as build artifacts.
-                    // If not set, the files will be associated with the default build name and build number (i.e the
-                    // the Jenkins job name and number).
-                    buildName: 'holyFrog',
-                    buildNumber: '42'
+                    }'''
                 )
             }
         }
