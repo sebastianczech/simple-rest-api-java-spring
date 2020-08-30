@@ -6,14 +6,6 @@ pipeline {
         }
     }
 
-    environment {
-        NEXUS_VERSION = "nexus3"
-        NEXUS_PROTOCOL = "http"
-        NEXUS_URL = "192.168.0.27:8083"
-        NEXUS_REPOSITORY = "maven-nexus-repo"
-        NEXUS_CREDENTIAL_ID = "nexus"
-    }
-
     stages {
         stage('Info') {
             steps {
@@ -43,82 +35,6 @@ pipeline {
                 always {
                     junit 'target/surefire-reports/*.xml'
                 }
-            }
-        }
-        stage('Test acceptance') {
-            steps {
-                echo 'Acceptance testing..'
-            }
-        }
-        stage('Code analysis') {
-            steps {
-                withSonarQubeEnv('SonarQube Server') {
-                    // Optionally use a Maven environment you've configured already
-//                     withMaven(maven:'Maven 3.5') {
-                        sh 'mvn clean package sonar:sonar'
-//                     }
-                }
-            }
-        }
-        stage("Quality gate") {
-            steps {
-                timeout(time: 1, unit: 'HOURS') {
-                    // Parameter indicates whether to set pipeline to UNSTABLE if Quality Gate fails
-                    // true = set pipeline to UNSTABLE, false = don't
-                    waitForQualityGate abortPipeline: true
-                }
-            }
-        }
-        stage('Publish to Nexus') {
-            steps {
-                script {
-                    // required plugins: pipeline-utility-steps, nexus-artifact-uploader
-                    pom = readMavenPom file: "pom.xml";
-                    filesByGlob = findFiles(glob: "target/*.${pom.packaging}");
-                    echo "${filesByGlob[0].name} ${filesByGlob[0].path} ${filesByGlob[0].directory} ${filesByGlob[0].length} ${filesByGlob[0].lastModified}"
-                    artifactPath = filesByGlob[0].path;
-                    artifactExists = fileExists artifactPath;
-                    if(artifactExists) {
-                        echo "*** File: ${artifactPath}, group: ${pom.groupId}, packaging: ${pom.packaging}, version ${pom.version}";
-                        nexusArtifactUploader(
-                            nexusVersion: NEXUS_VERSION,
-                            protocol: NEXUS_PROTOCOL,
-                            nexusUrl: NEXUS_URL,
-                            groupId: pom.groupId,
-                            version: pom.version,
-                            repository: NEXUS_REPOSITORY,
-                            credentialsId: NEXUS_CREDENTIAL_ID,
-                            artifacts: [
-                                [artifactId: pom.artifactId,
-                                classifier: '',
-                                file: artifactPath,
-                                type: pom.packaging],
-                                [artifactId: pom.artifactId,
-                                classifier: '',
-                                file: "pom.xml",
-                                type: "pom"]
-                            ]
-                        );
-                    } else {
-                        error "*** File: ${artifactPath}, could not be found";
-                    }
-                }
-            }
-        }
-        stage('Publish to Artifactory') {
-            steps {
-                // required plugins: artifactory
-                rtUpload (
-                    serverId: 'artifactory_homelab',
-                    spec: '''{
-                          "files": [
-                            {
-                              "pattern": "target/api*.jar",
-                              "target": "libs-release-local"
-                            }
-                         ]
-                    }'''
-                )
             }
         }
     }
