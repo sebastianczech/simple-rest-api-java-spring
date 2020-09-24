@@ -1,5 +1,7 @@
 # Simple REST API in Java with Spring
 
+[![BCH compliance](https://bettercodehub.com/edge/badge/sebastianczech/simple-rest-api-java-spring?branch=master)](https://bettercodehub.com/)
+
 Test app:
 
 ```bash
